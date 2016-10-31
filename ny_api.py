@@ -1,8 +1,9 @@
 from flask import Flask, request
 from flask_restful import Api, Resource
 import psycopg2
+from local_settings import pw
 
-conn = psycopg2.connect(host='pollwatchny.cweqetvzooza.us-west-2.rds.amazonaws.com',dbname='pollwatch',user='pollwatch',password='7RQs@d4yFSZX')
+conn = psycopg2.connect(host='pollwatchny.cweqetvzooza.us-west-2.rds.amazonaws.com',dbname='pollwatch',user='pollwatch',password=pw)
 
 app = Flask(__name__)
 api = Api(app)
@@ -13,7 +14,7 @@ class Address(Resource):
 		streetname = request.args.get('streetname')
 		zipcode = request.args.get('zipcode')
 		curs = conn.cursor()
-		curs.execute("SELECT ad, ed FROM nyfile WHERE streetno = '%s' AND streetname = '%s' AND zip = '%s'" % (streetno, streetname, zipcode))
+		curs.execute("SELECT ad, ed FROM nyfile WHERE streetno = '%s' AND streetname = '%s' AND zip = '%s'" % (streetno.upper(), streetname.upper(), zipcode))
 		conn.commit()
 		data = curs.fetchall()
 		if len(data) == 0:

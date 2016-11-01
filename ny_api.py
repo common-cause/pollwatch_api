@@ -12,7 +12,7 @@ class Address(Resource):
 	def get(self):
 		streetno = request.args.get('streetno')
 		streetname = request.args.get('streetname')
-		zipcode = request.args.get('zipcode')
+		zipcode = request.args.get('zip')
 		curs = conn.cursor()
 		curs.execute("SELECT ad, ed FROM nyfile WHERE streetno = '%s' AND streetname = '%s' AND zip = '%s'" % (streetno.upper(), streetname.upper(), zipcode))
 		conn.commit()

@@ -14,7 +14,7 @@ class Address(Resource):
 		streetname = request.args.get('streetname')
 		zipcode = request.args.get('zipcode')
 		curs = conn.cursor()
-		curs.execute("SELECT ad, ed FROM nyfile WHERE streetno = '%s' AND (streetname = '%s' OR streetname = replace('%s','TRAIL','TRL') AND zip = '%s'" % (streetno.upper(), streetname.upper(), zipcode))
+		curs.execute("SELECT ad, ed FROM nyfile WHERE streetno = '%s' AND (streetname = '%s' OR streetname = replace('%s','TRAIL','TRL') AND zip = '%s'" % (streetno.upper(), streetname.upper(), streetname.upper(), zipcode))
 		conn.commit()
 		data = curs.fetchall()
 		if len(data) == 0:

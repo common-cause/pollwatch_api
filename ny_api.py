@@ -15,7 +15,7 @@ class AddressError(Exception):
 		pass
 
 def nyc_lookup(streetno, streetname, zipcode):
-	endpoint = 'https://nyc.electionapi.com/psl/pollsiteinfo'
+	endpoint = 'http://nyc.electionapi.com/psl/pollsiteinfo'
 	payload = {'key' : '979e41df-0bf3-4ae4-97d7-16da76f6af65', 'streetnumber' : streetno, 'streetname' : streetname, 'postalcode' : zipcode}
 	api_data = json.loads(requests.get(endpoint,params=payload).text)
 	try:

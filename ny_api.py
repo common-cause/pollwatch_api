@@ -14,7 +14,7 @@ class AddressError(Exception):
 	def __init__(self):
 		pass
 
-def nyc_lookup(streetno, streetname, zipcode):
+def nyc_lookup(streetno, streetname, zipcode,attempt=1):
 	endpoint = 'http://nyc.electionapi.com/psl/pollsiteinfo'
 	payload = {'key' : '979e41df-0bf3-4ae4-97d7-16da76f6af65', 'streetnumber' : streetno, 'streetname' : streetname, 'postalcode' : zipcode}
 	api_data = json.loads(requests.get(endpoint,params=payload).text)
@@ -22,6 +22,8 @@ def nyc_lookup(streetno, streetname, zipcode):
 		ed_data = api_data['election_district'].split('/')
 		return {'assembly_district' : ed_data[0], 'election_district' : ed_data[1]}
 	except KeyError:
+		if attempt < 6:
+			return nyc_lookup(streetno, streetname, zipcode, attempt=attempt+1)
 		raise AddressError
 
 def upstate_lookup(streetno, streetname, zipcode):

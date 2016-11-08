@@ -20,7 +20,7 @@ def nyc_lookup(streetno, streetname, zipcode,attempt=1):
 	api_data = json.loads(requests.get(endpoint,params=payload).text)
 	try:
 		ed_data = api_data['election_district'].split('/')
-		return {'assembly_district' : ed_data[0], 'election_district' : ed_data[1]}
+		return {'assembly_district' : ed_data[1], 'election_district' : ed_data[0]}
 	except KeyError:
 		if attempt < 6:
 			return nyc_lookup(streetno, streetname, zipcode, attempt=attempt+1)

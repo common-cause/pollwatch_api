@@ -4,6 +4,7 @@ import psycopg2
 from local_settings import pw
 import requests
 import json
+import re
 
 conn = psycopg2.connect(host='pollwatchny.cweqetvzooza.us-west-2.rds.amazonaws.com',dbname='pollwatch',user='pollwatch',password=pw)
 
@@ -13,6 +14,9 @@ api = Api(app)
 class AddressError(Exception):
 	def __init__(self):
 		pass
+		
+directions = {'E' : 'EAST', 'W' : 'WEST', 'S' : 'SOUTH', 'N' : 'NORTH'}
+types = {'ST' : 'STREET', 'STREET' : 'STREET', 'AVE' : 'AVENUE', 'AVENUE' : 'AVENUE'}
 
 def nyc_lookup(streetno, streetname, zipcode,attempt=1):
 	endpoint = 'http://nyc.electionapi.com/psl/pollsiteinfo'
@@ -26,12 +30,16 @@ def nyc_lookup(streetno, streetname, zipcode,attempt=1):
 			return nyc_lookup(streetno, streetname, zipcode, attempt=attempt+1)
 		raise AddressError
 
-def upstate_lookup(streetno, streetname, zipcode):
+def upstate_lookup(streetno, streetname, zipcode,attempts=0):
 	curs = conn.cursor()
 	curs.execute("SELECT ad, ed FROM nyfile WHERE streetno = '%s' AND (streetname = '%s' OR streetname = replace('%s','TRAIL','TRL')) AND zip = '%s'" % (streetno.upper(), streetname.upper(), streetname.upper(), zipcode))
 	conn.commit()
 	data = curs.fetchall()
-	if len(data) == 0:
+	if len(data) == 0 and attempts == 0:
+		if re.match(re.compile('[SNEW] \d+'), streetname.upper()) is not None:
+			comps = streetname.upper().split(' ')
+			newaddress =  directions[comps[0]]+ ' ' + re.match(re.compile('(\d+)'),comps[1]).groups(0)[0] + ' ' + types[comps[-1]]
+			return upstate_lookup(streetno,newaddress,zipcode,attempts=1)
 		raise AddressError
 	else:
 		del curs

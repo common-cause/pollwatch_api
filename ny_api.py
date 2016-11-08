@@ -40,6 +40,7 @@ def upstate_lookup(streetno, streetname, zipcode,attempts=0):
 			comps = streetname.upper().split(' ')
 			newaddress =  directions[comps[0]]+ ' ' + re.match(re.compile('(\d+)'),comps[1]).groups(0)[0] + ' ' + types[comps[-1]]
 			return upstate_lookup(streetno,newaddress,zipcode,attempts=1)
+		return nyc_lookup(streetno, streetname, zipcode,attempt=2)
 		raise AddressError
 	else:
 		del curs

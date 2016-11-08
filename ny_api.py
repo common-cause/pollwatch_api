@@ -44,10 +44,10 @@ class Address(Resource):
 		zipcode = request.args.get('zipcode')
 		county = request.args.get('county')
 		try:
-			if county in ['Kings County','New York County','Richmond County','Queens County','Bronx County']:
-				return nyc_lookup(streetno, streetname, zipcode)
-			else:
-				return upstate_lookup(streetno, streetname, zipcode)
+			#if county in ['Kings County','New York County','Richmond County','Queens County','Bronx County']:
+			#	return nyc_lookup(streetno, streetname, zipcode)
+			#else:
+			return upstate_lookup(streetno, streetname, zipcode)
 		except AddressError:
 			return {'Error' : 'AddressNotFound','streetno' : streetno, 'streetname': streetname, 'zipcode' : zipcode}
 	
